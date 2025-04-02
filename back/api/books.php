@@ -28,10 +28,10 @@ try {
         case 'GET':
             //methode 1
             // Get all books
-            $stmt = $pdo->query("SELECT * FROM Book");
-            $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            echo json_encode($books);
-            break;
+            //$stmt = $pdo->query("SELECT * FROM Book");
+            //$books = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            //echo json_encode($books);
+            //break;
 
             //method 2
             if (isset($_GET['id'])) {
