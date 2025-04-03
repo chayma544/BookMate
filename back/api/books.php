@@ -1,4 +1,5 @@
-<?php
+<?php 
+//general notes!!!!!!!!!!!!!!!!!! is it author_name or author-name underscores are more convetional
 header("Access-Control-Allow-Origin: *"); 
 header("Content-Type: application/json");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
@@ -28,10 +29,10 @@ try {
         case 'GET':
             //methode 1
             // Get all books
-            $stmt = $pdo->query("SELECT * FROM Book");
-            $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            echo json_encode($books);
-            break;
+            //$stmt = $pdo->query("SELECT * FROM Book");
+            //$books = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            //echo json_encode($books);
+            //break;
 
             //method 2
             if (isset($_GET['id'])) {
@@ -92,10 +93,11 @@ try {
                 
                 $stmt = $pdo->prepare("
                     SELECT * FROM bookmate_livre 
-                    WHERE (title LIKE :search OR author_name LIKE :author)
+                    WHERE (title LIKE :search AND author_name LIKE :author
                     AND genre LIKE :genre
-                    AND availability = 'available'
+                    AND availability = 'available')
                 ");
+                
                 //the prepared sql query is in $stmt
 
 
@@ -131,81 +133,126 @@ try {
 
 
             case 'POST':
-                // Read JSON data from the request body
-                $data = json_decode(file_get_contents("php://input"), true);
+                // Parse the incoming JSON data
+                $requestData = json_decode(file_get_contents("php://input"), true);
                 
-                // Ensure the action parameter is set in the request
-                if (!isset($data['action'])) {
-                    echo json_encode(['error' => 'Missing action parameter']);
-                    exit;
-                }               
-            
-                switch ($data['action']) {
-                    case 'add_book': // ✅ Add a new book to the database
-                        // Ensure all required fields are provided
-                        if (!isset($data['title'], $data['author-name'], $data['language'], $data['genre'], $data['release-date'], $data['user-id'])) {
-                            echo json_encode(['error' => 'Missing required fields']);
-                            exit;
-                        }
-                        
-                        // Prepare and execute the SQL INSERT query
-                        $stmt = $pdo->prepare("INSERT INTO `livre` (`title`, `author-name`, `language`, `genre`, `release-date`, `status`, `dateAjout`, `availability`, `user-id`) 
-                                               VALUES (?, ?, ?, ?, ?, 'available', NOW(), 'yes', ?)");
-                        $stmt->execute([$data['title'], $data['author-name'], $data['language'], $data['genre'], $data['release-date'], $data['user-id']]);
-                        
-                        // Return success response with the newly inserted book ID
-                        echo json_encode(['message' => 'Book added successfully', 'id' => $pdo->lastInsertId()]);
-                        break;
-            
-                    case 'create_request': // ✅ Create a swap/borrow request
-                        // Ensure all required fields are provided
-                        if (!isset($data['requester_id'], $data['book-id'], $data['type'])) {
-                            echo json_encode(['error' => 'Missing required fields']);
-                            exit;
-                        }
-                        
-                        // Prepare and execute the SQL INSERT query for requests
-                        $stmt = $pdo->prepare("INSERT INTO `requests` (`requester_id`, `book_id`, `type`, `status`) 
-                                               VALUES (?, ?, ?, 'PENDING')");
-                        $stmt->execute([$data['requester_id'], $data['book-id'], strtoupper($data['type'])]);
-                        
-                        // Return success response with the newly created request ID
-                        echo json_encode(['message' => 'Request created successfully', 'id' => $pdo->lastInsertId()]);
-                        break;
-            
-                    default:
-                        // Handle invalid actions
-                        echo json_encode(['error' => 'Invalid action']);
-                        break;
+                // Validate required fields for adding a book
+                if (empty($requestData['title']) || empty($requestData['author_name'])) {
+                    http_response_code(400);
+                    echo json_encode(['error' => 'Title and author name are required']);
+                    break;
                 }
+            
+                // Insert new book into database
+                $stmt = $pdo->prepare("
+                    INSERT INTO bookmate_livre 
+                    (title, author_name, language, genre, release_date, status, dateAjout, availability, user_id) 
+                    VALUES (?, ?, ?, ?, ?, ?, NOW(), ?, ?)
+                ");
+            
+                $stmt->execute([
+                    $requestData['title'],
+                    $requestData['author_name'],
+                    $requestData['language'] ?? 'Unknown',
+                    $requestData['genre'] ?? 'Other',
+                    $requestData['release_date'] ?? null,
+                    $requestData['status'] ?? 'good',
+                    $requestData['availability'] ?? 'available',
+                    $requestData['user_id'] ?? null 
+                ]);
+            
+                // Return success response
+                http_response_code(201);
+                echo json_encode([
+                    'id' => $pdo->lastInsertId(),
+                    'message' => 'Book added successfully'
+                ]);
                 break;
                 
 
-        case 'PUT':
-            // Update book
-            $data = json_decode(file_get_contents("php://input"), true);
-            $stmt = $pdo->prepare("UPDATE Book SET title=?, author_name=?, status=? WHERE id=?");
-            $stmt->execute([$data['title'], $data['author_name'], $data['status'], $data['id']]);
-            echo json_encode(['message' => 'Book updated']);
-            break;
+                case 'PUT':
+                    // Verify book ID and required fields
+                    if (empty($requestData['book_id'])) {
+                        http_response_code(400);
+                        echo json_encode(['error' => 'Book ID is required']);
+                        break; // exits here only if book-id is completely missing ya3ni ken kif book-id ma 3andhech value
+                    }
+                    
+                    // Update book information : hethi requette préparée
+                    
+                    $stmt = $pdo->prepare("
+                        UPDATE bookmate_livre 
+                        SET title = ?, author_name = ?, language = ?, genre = ?, 
+                            release_date = ?, status = ?, availability = ?
+                        WHERE book_id = ?
+                    ");
+                    
+                    // executes the query
 
-        case 'DELETE':
-            // Delete book
-            $id = $_GET['id'];
-            $stmt = $pdo->prepare("DELETE FROM Book WHERE id=?");
-            $stmt->execute([$id]);
-            echo json_encode(['message' => 'Book deleted']);
-            break;
+                    $stmt->execute([
+                        $requestData['title'],
+                        $requestData['author_name'],
+                        $requestData['language'],
+                        $requestData['genre'],
+                        $requestData['release_date'],
+                        $requestData['status'],
+                        $requestData['availability'],
+                        $requestData['book_id']
+                    ]);
+                    
 
-        default:
-            http_response_code(405);
-            echo json_encode(['error' => 'Method not allowed']);
- 
-    }
+                    // checks if any rows were affected 
 
- 
+                    if ($stmt->rowCount() > 0) {
+                        // success : at least 1 row is updated
+                        echo json_encode(['message' => 'Book updated successfully']);
+                    } else {
+                        // failure : 0 rows updated ( book-id unmached or no changes needed )
+                        http_response_code(404);
+                        echo json_encode(['error' => 'Book not found or no changes made']);
+                    }
+                    break;
+        
+                case 'DELETE':
+                    // Verify book ID
+                    if (empty($_GET['id'])) {
+                        http_response_code(400);
+                        echo json_encode(['error' => 'Book ID is required']);
+                        break;
+                    }
+                    
+                    // Soft delete (recommended) or hard delete
+                    $bookId = $_GET['id'];
+                    
+                    // Option 1: Soft delete (update availability)
+                    $stmt = $pdo->prepare("
+                        UPDATE bookmate_livre 
+                        SET availability = 'deleted' 
+                        WHERE book_id = ?
+                    ");
+                    $stmt->execute([$bookId]);
+                    
+                    // Option 2: Hard delete
+                    // $stmt = $pdo->prepare("DELETE FROM bookmate_livre WHERE book_id = ?");
+                    // $stmt->execute([$bookId]);
+                    
+                    if ($stmt->rowCount() > 0) {
+                        echo json_encode(['message' => 'Book removed successfully']);
+                    } else {
+                        http_response_code(404);
+                        echo json_encode(['error' => 'Book not found']);
+                    }
+                    break;
+        
+                default:
+                    http_response_code(405);
+                    echo json_encode(['error' => 'Method not allowed']);
+            }
         } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(['error' => $e->getMessage()]);
+            echo json_encode([
+                'error' => 'Database error',
+                'message' => $e->getMessage()
+            ]);
         }
-    ?>
+        ?>
