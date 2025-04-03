@@ -75,13 +75,13 @@ try {
                 }
             } 
             // Search books with filters
-            elseif (isset($_GET['search']) || isset($_GET['genre']) || isset($_GET['author'])) {
+            elseif (isset($_GET['title']) || isset($_GET['genre']) || isset($_GET['author'])) {
 
 
                 //permet d'éviter les erreurs et de gérer le cas où un paramètre n'est pas fourni
                 
 
-                $search = isset($_GET['search']) ? "%{$_GET['search']}%" : "%";
+                $title = isset($_GET['title']) ? "%{$_GET['title']}%" : "%";
                 //commence ou se termine par le titre IF WE DON'T SPECIFY WE GET ALL THE TITLES
                 $genre = isset($_GET['genre']) ? $_GET['genre'] : "%";
                 //commence par le genre
@@ -93,7 +93,7 @@ try {
                 
                 $stmt = $pdo->prepare("
                     SELECT * FROM livre 
-                    WHERE (title LIKE :search AND author_name LIKE :author
+                    WHERE (title LIKE :title AND author_name LIKE :author
                     AND genre LIKE :genre
                     AND availability = 'available')
                 ");
@@ -104,7 +104,7 @@ try {
                 //form of an associative array
 
                 $stmt->execute([
-                    ':search' => $search,
+                    ':title' => $title,
                     ':author' => $author,
                     ':genre' => $genre
                 ]);
@@ -130,6 +130,7 @@ try {
                 echo json_encode($books);
             }
             break;
+            //query() and prepare() difference ---> query() selects and execute toul
 
 
             
@@ -138,11 +139,12 @@ try {
         case 'POST':
             // Parse the incoming JSON data
             $requestData = json_decode(file_get_contents("php://input"), true);
+            //json_decode --> yrodha en tableau associative!!! lezm trodha akeka bch te5dem fl php
             
             // Validate required fields for adding a book
-            if (empty($requestData['title']) || empty($requestData['author_name']) || empty($requestData['user_id'])) {
+            if (empty($requestData['title']) || empty($requestData['author_name'])) {
                 http_response_code(400);
-                echo json_encode(['error' => 'Title, user_id and author name are required']);
+                echo json_encode(['error' => 'Title and author name are required']);
                 break;
             }
             
@@ -153,8 +155,10 @@ try {
             $author_name = $requestData['author_name'];
 
             // Check if user exists
-            $userCheck = $pdo->prepare("SELECT 1 FROM `user` WHERE `user_id` = ?");
+            $userCheck = $pdo->prepare("SELECT 1 FROM user WHERE user_id = ?");
             $userCheck->execute([$user_id]);
+            //=== :type+value
+            //== :value
             
             if ($userCheck->rowCount() === 0) {
                 http_response_code(404);
@@ -164,10 +168,10 @@ try {
 
             // Check for duplicate book
             $duplicateCheck = $pdo->prepare("
-                SELECT 1 FROM `livre` 
-                WHERE `title` = ? 
-                AND `author_name` = ? 
-                AND `user_id` = ?
+                SELECT 1 FROM livre
+                WHERE title = ? 
+                AND author_name = ? 
+                AND user_id = ?
             ");
             $duplicateCheck->execute([$title, $author_name, $user_id]);
             
