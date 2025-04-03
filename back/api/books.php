@@ -130,7 +130,6 @@ try {
             break;
 
 
-        case 'POST':
             case 'POST':
                 // Read JSON data from the request body
                 $data = json_decode(file_get_contents("php://input"), true);
@@ -139,73 +138,36 @@ try {
                 if (!isset($data['action'])) {
                     echo json_encode(['error' => 'Missing action parameter']);
                     exit;
-                }
-            
-                // Connect to MySQL database
-                try {
-                    $pdo = new PDO("mysql:host=localhost;dbname=bookmate", "root", "");
-                    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                } catch (PDOException $e) {
-                    echo json_encode(['error' => 'Database connection failed: ' . $e->getMessage()]);
-                    exit;
-                }
+                }               
             
                 switch ($data['action']) {
                     case 'add_book': // ✅ Add a new book to the database
                         // Ensure all required fields are provided
-                        if (!isset($data['title'], $data['author_name'], $data['language'], $data['genre'], $data['release_date'], $data['user_id'])) {
+                        if (!isset($data['title'], $data['author-name'], $data['language'], $data['genre'], $data['release-date'], $data['user-id'])) {
                             echo json_encode(['error' => 'Missing required fields']);
                             exit;
                         }
                         
                         // Prepare and execute the SQL INSERT query
-                        $stmt = $pdo->prepare("INSERT INTO `livre` (`title`, `author-name`, `language`, `genre`, `release-date`, `status`, `dateAjout`, `availability`, `user-id`) VALUES (?, ?, ?, ?, ?, 'available', NOW(), 'yes', ?)");
-                        $stmt->execute([$data['title'], $data['author_name'], $data['language'], $data['genre'], $data['release_date'], $data['user_id']]);
+                        $stmt = $pdo->prepare("INSERT INTO `livre` (`title`, `author-name`, `language`, `genre`, `release-date`, `status`, `dateAjout`, `availability`, `user-id`) 
+                                               VALUES (?, ?, ?, ?, ?, 'available', NOW(), 'yes', ?)");
+                        $stmt->execute([$data['title'], $data['author-name'], $data['language'], $data['genre'], $data['release-date'], $data['user-id']]);
                         
                         // Return success response with the newly inserted book ID
                         echo json_encode(['message' => 'Book added successfully', 'id' => $pdo->lastInsertId()]);
                         break;
             
-                    case 'update_book': // ✅ Update an existing book's details
-                        // Ensure all required fields are provided
-                        if (!isset($data['book_id'], $data['title'], $data['author_name'], $data['language'], $data['genre'], $data['release_date'], $data['status'], $data['availability'])) {
-                            echo json_encode(['error' => 'Missing required fields']);
-                            exit;
-                        }
-                        
-                        // Prepare and execute the SQL UPDATE query
-                        $stmt = $pdo->prepare("UPDATE `livre` SET `title` = ?, `author-name` = ?, `language` = ?, `genre` = ?, `release-date` = ?, `status` = ?, `availability` = ? WHERE `book-id` = ?");
-                        $stmt->execute([$data['title'], $data['author_name'], $data['language'], $data['genre'], $data['release_date'], $data['status'], $data['availability'], $data['book_id']]);
-                        
-                        // Return success response
-                        echo json_encode(['message' => 'Book updated successfully']);
-                        break;
-            
-                    case 'delete_book': // ✅ Delete a book from the database
-                        // Ensure the book ID is provided
-                        if (!isset($data['book_id'])) {
-                            echo json_encode(['error' => 'Missing book ID']);
-                            exit;
-                        }
-                        
-                        // Prepare and execute the SQL DELETE query
-                        $stmt = $pdo->prepare("DELETE FROM `livre` WHERE `book-id` = ?");
-                        $stmt->execute([$data['book_id']]);
-                        
-                        // Return success response
-                        echo json_encode(['message' => 'Book deleted successfully']);
-                        break;
-            
                     case 'create_request': // ✅ Create a swap/borrow request
                         // Ensure all required fields are provided
-                        if (!isset($data['requester_id'], $data['book_id'], $data['type'])) {
+                        if (!isset($data['requester_id'], $data['book-id'], $data['type'])) {
                             echo json_encode(['error' => 'Missing required fields']);
                             exit;
                         }
                         
                         // Prepare and execute the SQL INSERT query for requests
-                        $stmt = $pdo->prepare("INSERT INTO `requests` (`requester_id`, `book_id`, `type`, `status`) VALUES (?, ?, ?, 'PENDING')");
-                        $stmt->execute([$data['requester_id'], $data['book_id'], strtoupper($data['type'])]);
+                        $stmt = $pdo->prepare("INSERT INTO `requests` (`requester_id`, `book_id`, `type`, `status`) 
+                                               VALUES (?, ?, ?, 'PENDING')");
+                        $stmt->execute([$data['requester_id'], $data['book-id'], strtoupper($data['type'])]);
                         
                         // Return success response with the newly created request ID
                         echo json_encode(['message' => 'Request created successfully', 'id' => $pdo->lastInsertId()]);
@@ -217,7 +179,7 @@ try {
                         break;
                 }
                 break;
-            
+                
 
         case 'PUT':
             // Update book
