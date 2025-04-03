@@ -130,7 +130,7 @@ try {
             break;
 
 
-        case 'POST':
+        case 'POST': // what the hell ???!???!???!???!???!???!???!???!???!???!???!???!
             case 'POST':
                 // Read JSON data from the request body
                 $data = json_decode(file_get_contents("php://input"), true);
@@ -142,6 +142,7 @@ try {
                 }
             
                 // Connect to MySQL database
+                //its alreadyy connected!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 try {
                     $pdo = new PDO("mysql:host=localhost;dbname=bookmate", "root", "");
                     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
