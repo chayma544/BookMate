@@ -93,12 +93,8 @@ try {
                 
                 $stmt = $pdo->prepare("
                     SELECT * FROM bookmate_livre 
-<<<<<<< HEAD
                     WHERE (title LIKE :search 
                     OR author_name LIKE :author)
-=======
-                    WHERE (title LIKE :search AND author_name LIKE :author
->>>>>>> 6d820cf75fa658b8b12fed9e76c0877c7731bcea
                     AND genre LIKE :genre
                     AND availability = 'available')
                 ");
@@ -137,6 +133,8 @@ try {
             break;
 
 
+
+
             case 'POST':
                 // Verify if "action" parameter is provided
                 if (!isset($requestData['action'])) {
@@ -144,8 +142,7 @@ try {
                     echo json_encode(['error' => 'Missing action parameter']);
                     break;
                 }
-                //$requestDATA -->which contains the JSON data sent by the client
-                //we're lo
+    
                 switch ($requestData['action']) {
                     case 'add_book': 
                         if (empty($requestData['title']) || empty($requestData['author_name'])) {
@@ -153,6 +150,7 @@ try {
                             echo json_encode(['error' => 'Title and author name are required']);
                             break;
                         }
+                        //if the title and author's namewere 
     
                         $stmt = $pdo->prepare("
                             INSERT INTO bookmate_livre 
@@ -205,7 +203,14 @@ try {
                         break;
                 }
                 break;
-    
+
+
+
+           
+
+
+
+                
 
                 case 'PUT':
                     // Verify book ID and required fields
@@ -250,6 +255,12 @@ try {
                     }
                     break;
         
+
+
+
+
+
+
                 case 'DELETE':
                     // Verify book ID
                     if (empty($_GET['id'])) {
