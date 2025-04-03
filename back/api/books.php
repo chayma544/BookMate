@@ -39,14 +39,14 @@ try {
                 // Get single book by ID
                 // $_GET stocke les parametres de l'URL dans un tableau associatif(the part after the ?)
                 //$_GET = [
-                  //  "search" => "harry",
-                   // "genre" => "fantasy"
+                    //  "search" => "harry",
+                    // "genre" => "fantasy"
                 //];                
-                $stmt = $pdo->prepare("SELECT * FROM bookmate_livre WHERE book_id = ?");//this means pdo is already an object of the PDO class from db.php
+                $stmt = $pdo->prepare("SELECT * FROM livre WHERE `book_id` = ?");//this means pdo is already an object of the PDO class from db.php
                 //This prepares the SQL query but does not execute it yet.
                 //$object->method();  ==> Call a method of an object
-                $stmt->execute([$_GET['id']]);//This does two things: 1️⃣ Binds the value ($_GET['id']) to the ? placeholder.
-                                                                    //2️⃣ Executes the query securely, preventing SQL injection.
+                $stmt->execute([$_GET['id']]);//This does two things: 1)Binds the value ($_GET['id']) to the ? placeholder.
+                                                                    //2) Executes the query securely, preventing SQL injection.
                 $book = $stmt->fetch(PDO::FETCH_ASSOC);
                 //$stmt is an object that holds the prepared SQL query.
                 //The structure of the query never changes, only the values do.
@@ -92,7 +92,7 @@ try {
 
                 
                 $stmt = $pdo->prepare("
-                    SELECT * FROM bookmate_livre 
+                    SELECT * FROM livre 
                     WHERE (title LIKE :search AND author_name LIKE :author
                     AND genre LIKE :genre
                     AND availability = 'available')
@@ -132,127 +132,181 @@ try {
             break;
 
 
-            case 'POST':
-                // Parse the incoming JSON data
-                $requestData = json_decode(file_get_contents("php://input"), true);
-                
-                // Validate required fields for adding a book
-                if (empty($requestData['title']) || empty($requestData['author_name'])) {
-                    http_response_code(400);
-                    echo json_encode(['error' => 'Title and author name are required']);
-                    break;
-                }
+        case 'POST':
+            // Parse the incoming JSON data
+            $requestData = json_decode(file_get_contents("php://input"), true);
             
-                // Insert new book into database
-                $stmt = $pdo->prepare("
-                    INSERT INTO bookmate_livre 
-                    (title, author_name, language, genre, release_date, status, dateAjout, availability, user_id) 
-                    VALUES (?, ?, ?, ?, ?, ?, NOW(), ?, ?)
-                ");
-            
-                $stmt->execute([
-                    $requestData['title'],
-                    $requestData['author_name'],
-                    $requestData['language'] ?? 'Unknown',
-                    $requestData['genre'] ?? 'Other',
-                    $requestData['release_date'] ?? null,
-                    $requestData['status'] ?? 'good',
-                    $requestData['availability'] ?? 'available',
-                    $requestData['user_id'] ?? null 
-                ]);
-            
-                // Return success response
-                http_response_code(201);
-                echo json_encode([
-                    'id' => $pdo->lastInsertId(),
-                    'message' => 'Book added successfully'
-                ]);
+            // Validate required fields for adding a book
+            if (empty($requestData['title']) || empty($requestData['author_name']) || empty($requestData['user_id'])) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Title, user_id and author name are required']);
                 break;
+            }
+            
             
 
-                case 'PUT':
-                    // Verify book ID and required fields
-                    if (empty($requestData['book_id'])) {
-                        http_response_code(400);
-                        echo json_encode(['error' => 'Book ID is required']);
-                        break; // exits here only if book-id is completely missing ya3ni ken kif book-id ma 3andhech value
-                    }
-                    
-                    // Update book information : hethi requette préparée
-                    
-                    $stmt = $pdo->prepare("
-                        UPDATE bookmate_livre 
-                        SET title = ?, author_name = ?, language = ?, genre = ?, 
-                            release_date = ?, status = ?, availability = ?
-                        WHERE book_id = ?
-                    ");
-                    
-                    // executes the query
+            $user_id = $requestData['user_id'];
+            $title = $requestData['title'];
+            $author_name = $requestData['author_name'];
 
-                    $stmt->execute([
-                        $requestData['title'],
-                        $requestData['author_name'],
-                        $requestData['language'],
-                        $requestData['genre'],
-                        $requestData['release_date'],
-                        $requestData['status'],
-                        $requestData['availability'],
-                        $requestData['book_id']
-                    ]);
-                    
-
-                    // checks if any rows were affected 
-
-                    if ($stmt->rowCount() > 0) {
-                        // success : at least 1 row is updated
-                        echo json_encode(['message' => 'Book updated successfully']);
-                    } else {
-                        // failure : 0 rows updated ( book-id unmached or no changes needed )
-                        http_response_code(404);
-                        echo json_encode(['error' => 'Book not found or no changes made']);
-                    }
-                    break;
-        
-                case 'DELETE':
-                    // Verify book ID
-                    if (empty($_GET['id'])) {
-                        http_response_code(400);
-                        echo json_encode(['error' => 'Book ID is required']);
-                        break;
-                    }
-                    
-                    // Soft delete (recommended) or hard delete
-                    $bookId = $_GET['id'];
-                    
-                    // Option 1: Soft delete (update availability)
-                    $stmt = $pdo->prepare("
-                        UPDATE bookmate_livre 
-                        SET availability = 'deleted' 
-                        WHERE book_id = ?
-                    ");
-                    $stmt->execute([$bookId]);
-                    
-                    // Option 2: Hard delete
-                    // $stmt = $pdo->prepare("DELETE FROM bookmate_livre WHERE book_id = ?");
-                    // $stmt->execute([$bookId]);
-                    
-                    if ($stmt->rowCount() > 0) {
-                        echo json_encode(['message' => 'Book removed successfully']);
-                    } else {
-                        http_response_code(404);
-                        echo json_encode(['error' => 'Book not found']);
-                    }
-                    break;
-        
-                default:
-                    http_response_code(405);
-                    echo json_encode(['error' => 'Method not allowed']);
+            // Check if user exists
+            $userCheck = $pdo->prepare("SELECT 1 FROM `user` WHERE `user_id` = ?");
+            $userCheck->execute([$user_id]);
+            
+            if ($userCheck->rowCount() === 0) {
+                http_response_code(404);
+                echo json_encode(['error' => 'User not found']);
+                break;
             }
-        } catch (PDOException $e) {
-            http_response_code(500);
-            echo json_encode([
-                'error' => 'Database error',
-                'message' => $e->getMessage()
+
+            // Check for duplicate book
+            $duplicateCheck = $pdo->prepare("
+                SELECT 1 FROM `livre` 
+                WHERE `title` = ? 
+                AND `author_name` = ? 
+                AND `user_id` = ?
+            ");
+            $duplicateCheck->execute([$title, $author_name, $user_id]);
+            
+            if ($duplicateCheck->rowCount() > 0) {
+                http_response_code(409);
+                echo json_encode(['error' => 'This user already has a book with the same title and author']);
+                break;
+            }
+            
+        
+            // Insert new book into database
+            $stmt = $pdo->prepare("
+                INSERT INTO livre 
+                (title, author_name, language, genre, release_date, status, dateAjout, availability, user_id) 
+                VALUES (?, ?, ?, ?, ?, ?, NOW(), ?, ?)
+            ");
+        
+            $stmt->execute([
+                $requestData['title'],
+                $requestData['author_name'],
+                $requestData['language'] ?? 'Unknown',
+                $requestData['genre'] ?? 'Other',
+                $requestData['release_date'] ?? null,
+                $requestData['status'] ?? 'good',
+                $requestData['availability'] ?? 'available',
+                $requestData['user_id'] 
             ]);
-        }
-        ?>
+        
+            // Return success response
+            http_response_code(201);
+            echo json_encode([
+                'id' => $pdo->lastInsertId(),
+                'message' => 'Book added successfully'
+            ]);
+            break;
+        
+
+        case 'PUT':
+            $requestData = json_decode(file_get_contents("php://input"), true);
+            // Verify book ID exists
+            if (empty($requestData['book_id'])) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Book ID is required']);
+                break;
+            }
+        
+            // Get current book data
+            $checkBook = $pdo->prepare("SELECT * FROM livre WHERE `book_id` = ?");
+            $checkBook->execute([$requestData['book_id']]);
+            $currentData = $checkBook->fetch(PDO::FETCH_ASSOC);
+        
+            if (!$currentData) {
+                http_response_code(404);
+                echo json_encode(['error' => 'Book not found']);
+                break;
+            }
+        
+            // Merge new data with existing data (preserve unchanged fields)
+            $mergedData = array_merge($currentData, $requestData);
+        
+            // Prepare dynamic update query
+            $updateFields = [];
+            $params = [];
+            
+            // List of allowed fields to update
+            $allowedFields = [
+                'title', 
+                'author_name', 
+                'language', 
+                'genre',
+                'release_date', 
+                'status', 
+                'availability',
+                'user_id'
+            ];
+        
+            foreach ($allowedFields as $field) {
+                if (isset($requestData[$field])) {
+                    $updateFields[] = "`$field` = ?";
+                    $params[] = $requestData[$field];
+                }
+            }
+        
+            // If no valid fields provided
+            if (empty($updateFields)) {
+                http_response_code(400);
+                echo json_encode(['error' => 'No valid fields provided for update']);
+                break;
+            }
+        
+            // Add book_id to params
+            $params[] = $requestData['book_id'];
+        
+            // Build and execute dynamic query
+            $query = "UPDATE livre SET " . implode(', ', $updateFields) . " WHERE `book_id` = ?";
+            $stmt = $pdo->prepare($query);
+            $stmt->execute($params);
+        
+            if ($stmt->rowCount() > 0) {
+                echo json_encode(['message' => 'Book updated successfully']);
+            } else {
+                http_response_code(404);
+                echo json_encode(['error' => 'No changes made']);
+            }
+            break;
+
+        case 'DELETE':
+            // Verify book ID
+            if (empty($_GET['id'])) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Book ID is required']);
+                break;
+            }
+            
+            // Soft delete (recommended) or hard delete
+            $bookId = $_GET['id'];
+            
+            // Option 1: Soft delete (update availability)
+            
+            
+            // Option 2: Hard delete
+             $stmt = $pdo->prepare("DELETE FROM livre WHERE book_id = ?");
+             $stmt->execute([$bookId]);
+            
+            if ($stmt->rowCount() > 0) {
+                echo json_encode(['message' => 'Book removed successfully']);
+            } else {
+                http_response_code(404);
+                echo json_encode(['error' => 'Book not found']);
+            }
+            break;
+
+            default:
+                http_response_code(405);
+                echo json_encode(['error' => 'Method not allowed']);
+    }
+
+} catch (PDOException $e) {
+    http_response_code(500);
+    echo json_encode([
+        'error' => 'Database error',
+        'message' => $e->getMessage()
+    ]);
+}
+?>
