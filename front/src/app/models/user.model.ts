@@ -6,12 +6,12 @@ export interface User {
     Age?: number;
     //the age is optional
     favorite_genres?: string[];//add this to the user table
+    joined_date?: string;
   }
   
   export interface UserBook {
     user_id: number;
     book_id: number;
-    status: 'READ' | 'READING' | 'TO_READ' | 'FAVORITE';
+    added_date: string;
     rating?: 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | 3.5 | 4 | 4.5 | 5;
-    review?: string;
   }
