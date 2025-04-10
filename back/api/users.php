@@ -41,7 +41,7 @@ try {
             $requestData = json_decode(file_get_contents("php://input"), true);
 
             // Validate required fields for adding a user
-            if (empty($requestData['first_name']) || empty($requestData['last_name']) || empty($requestData['email'])) {
+            if (empty($requestData['FirstName']) || empty($requestData['LastName']) || empty($requestData['email'])) {
                 http_response_code(400);
                 echo json_encode(['error' => 'First name, last name, and email are required']);
                 break;
@@ -59,12 +59,12 @@ try {
 
             // Insert new user into database
             $stmt = $pdo->prepare("
-                INSERT INTO user (first_name, last_name, age, address, user_swap_score) 
+                INSERT INTO user (FirstName, LastName, age, address, user_swap_score) 
                 VALUES (?, ?, ?, ?, ?)
             ");
             $stmt->execute([
-                $requestData['first_name'],
-                $requestData['last_name'],
+                $requestData['FirstName'],
+                $requestData['LastName'],
                 $requestData['age'] ?? null,
                 $requestData['address'] ?? null,
                 0 // Default swap score
@@ -120,8 +120,8 @@ try {
 
             // List of allowed fields to update
             $allowedFields = [
-                'first_name', 
-                'last_name', 
+                'FirstName', 
+                'LastName', 
                 'age', 
                 'address'
             ];
