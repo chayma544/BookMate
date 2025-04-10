@@ -19,8 +19,11 @@ try {
             if (isset($_GET['id'])) {
                 // Get user by ID
                 $stmt = $pdo->prepare("SELECT * FROM user WHERE `user_id` = ?");
+                //insert the user_id to get the user's informations
                 $stmt->execute([$_GET['id']]);
                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                
 
                 if ($user) {
                     echo json_encode($user);
