@@ -22,7 +22,6 @@ try {
                 //insert the user_id to get the user's informations
                 $stmt->execute([$_GET['id']]);
                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
                 
 
                 if ($user) {
