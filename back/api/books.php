@@ -68,8 +68,8 @@ try {
                     echo json_encode($book);
                     //json_encode() pour convertir le tableau associatif en format json
                 } else {
-                    http_response_code(404);
-                    //On envoie un code d’erreur HTTP 404 (Not Found)
+                    http_response_code(204);
+                    //On envoie un code d’erreur HTTP 204 (book Not Found)
                     echo json_encode(['error' => 'Book not found']);
                     //Cela permet au client de comprendre que la requête a échoué.
                 }
