@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 10, 2025 at 03:59 PM
+-- Generation Time: Apr 11, 2025 at 09:49 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -20,27 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `bookmate`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `administrateur`
---
-
-CREATE TABLE `administrateur` (
-  `admin_id` int(50) NOT NULL,
-  `FirstName` varchar(50) NOT NULL,
-  `LastName` varchar(100) NOT NULL,
-  `age` int(100) NOT NULL DEFAULT 18
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `administrateur`
---
-
-INSERT INTO `administrateur` (`admin_id`, `FirstName`, `LastName`, `age`) VALUES
-(1, 'Admin', 'User', 18),
-(2, 'Admin', 'User', 30);
 
 -- --------------------------------------------------------
 
@@ -72,19 +51,6 @@ INSERT INTO `livre` (`book_id`, `title`, `author_name`, `language`, `genre`, `re
 -- --------------------------------------------------------
 
 --
--- Table structure for table `profil`
---
-
-CREATE TABLE `profil` (
-  `email` varchar(50) NOT NULL,
-  `password` varchar(50) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `admin_id` int(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `requests`
 --
 
@@ -93,7 +59,9 @@ CREATE TABLE `requests` (
   `requester_id` int(11) NOT NULL,
   `book_id` int(11) NOT NULL,
   `type` enum('BORROW','EXCHANGE') DEFAULT NULL,
-  `status` enum('PENDING','ACCEPTED','REJECTED') DEFAULT NULL
+  `status` enum('PENDING','ACCEPTED','REJECTED') DEFAULT NULL,
+  `datedeb` date DEFAULT NULL,
+  `durée` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -108,47 +76,58 @@ CREATE TABLE `user` (
   `LastName` varchar(50) NOT NULL,
   `age` int(11) NOT NULL DEFAULT 18,
   `address` varchar(50) NOT NULL,
-  `user_swap_score` int(11) NOT NULL DEFAULT 0
+  `user_swap_score` int(11) NOT NULL DEFAULT 0,
+  `email` varchar(50) DEFAULT NULL,
+  `password` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`user_id`, `FirstName`, `LastName`, `age`, `address`, `user_swap_score`) VALUES
-(1, 'John', 'Doe', 30, '123 Main St', 0),
-(2, 'Jane', 'Smith', 25, '456 Oak Ave', 0),
-(3, 'John', 'Doe', 25, '123 Main St', 0),
-(4, 'John', 'Doe', 25, '123 Main St', 0),
-(5, 'John', 'Doe', 25, '123 Main St', 0),
-(6, 'John', 'Doe', 25, '123 Main St', 0),
-(7, 'John', 'Doe', 25, '1234 Main St, SomeCity, Country', 0),
-(8, 'John', 'Doe', 25, '1234 Main St, SomeCity, Country', 0),
-(9, 'John', 'Doe', 25, '1234 Main St, SomeCity, Country', 0),
-(10, 'John', 'Doe', 25, '1234 Main St, SomeCity, Country', 0),
-(11, 'John', 'Doe', 25, '1234 Main St, SomeCity, Country', 0),
-(12, 'John', 'Doe', 25, '1234 Main St, SomeCity, Country', 0),
-(13, 'John', 'Doe', 25, '1234 Main St, SomeCity, Country', 0),
-(14, 'John', 'Doe', 25, '1234 Main St, SomeCity, Country', 0),
-(15, 'John', 'Doe', 25, '1234 Main St, SomeCity, Country', 0),
-(16, 'aaaa', 'bbbbb', 25, '123 Main St', 0),
-(17, 'aaaa', 'bbbbb', 25, '123 Main St', 0),
-(18, 'aaaa', 'bbbbb', 25, '123 Main St', 0),
-(19, 'aaaa', 'bbbbb', 25, '123 Main St', 0),
-(20, 'aaaa', 'bbbbb', 25, '123 Main St', 0),
-(21, 'aaaa', 'bbbbb', 25, '123 Main St', 0),
-(22, 'aaaa', 'bbbbb', 25, '123 Main St', 0),
-(23, 'aaaa', 'bbbbb', 25, '123 Main St', 0);
+INSERT INTO `user` (`user_id`, `FirstName`, `LastName`, `age`, `address`, `user_swap_score`, `email`, `password`) VALUES
+(1, 'John', 'Doe', 30, '123 Main St', 0, NULL, NULL),
+(2, 'Jane', 'Smith', 25, '456 Oak Ave', 0, NULL, NULL),
+(3, 'John', 'Doe', 25, '123 Main St', 0, NULL, NULL),
+(4, 'John', 'Doe', 25, '123 Main St', 0, NULL, NULL),
+(5, 'John', 'Doe', 25, '123 Main St', 0, NULL, NULL),
+(6, 'John', 'Doe', 25, '123 Main St', 0, NULL, NULL),
+(7, 'John', 'Doe', 25, '1234 Main St, SomeCity, Country', 0, NULL, NULL),
+(8, 'John', 'Doe', 25, '1234 Main St, SomeCity, Country', 0, NULL, NULL),
+(9, 'John', 'Doe', 25, '1234 Main St, SomeCity, Country', 0, NULL, NULL),
+(10, 'John', 'Doe', 25, '1234 Main St, SomeCity, Country', 0, NULL, NULL),
+(11, 'John', 'Doe', 25, '1234 Main St, SomeCity, Country', 0, NULL, NULL),
+(12, 'John', 'Doe', 25, '1234 Main St, SomeCity, Country', 0, NULL, NULL),
+(13, 'John', 'Doe', 25, '1234 Main St, SomeCity, Country', 0, NULL, NULL),
+(14, 'John', 'Doe', 25, '1234 Main St, SomeCity, Country', 0, NULL, NULL),
+(15, 'John', 'Doe', 25, '1234 Main St, SomeCity, Country', 0, NULL, NULL),
+(16, 'aaaa', 'bbbbb', 25, '123 Main St', 0, NULL, NULL),
+(17, 'aaaa', 'bbbbb', 25, '123 Main St', 0, NULL, NULL),
+(18, 'aaaa', 'bbbbb', 25, '123 Main St', 0, NULL, NULL),
+(19, 'aaaa', 'bbbbb', 25, '123 Main St', 0, NULL, NULL),
+(20, 'aaaa', 'bbbbb', 25, '123 Main St', 0, NULL, NULL),
+(21, 'aaaa', 'bbbbb', 25, '123 Main St', 0, NULL, NULL),
+(22, 'aaaa', 'bbbbb', 25, '123 Main St', 0, NULL, NULL),
+(23, 'aaaa', 'bbbbb', 25, '123 Main St', 0, NULL, NULL),
+(24, 'aaaa', 'bbbbb', 25, '123 Main St', 0, NULL, NULL),
+(25, 'aaaa', 'bbbbb', 25, '123 Main St', 0, NULL, NULL),
+(26, 'aaaa', 'bbbbb', 25, '123 Main St', 0, NULL, NULL),
+(27, 'aaaa', 'bbbbb', 25, '123 Main St', 0, NULL, NULL),
+(28, 'aaaa', 'bbbbb', 25, '123 Main St', 0, NULL, NULL),
+(29, 'aaaa', 'bbbbb', 25, '123 Main St', 0, NULL, NULL),
+(30, 'aaaa', 'bbbbb', 25, '123 Main St', 0, NULL, NULL),
+(31, 'aaaa', 'bbbbb', 25, '123 Main St', 0, NULL, NULL),
+(32, 'aaaa', 'bbbbb', 25, '123 Main St', 0, NULL, NULL),
+(33, 'aaaa', 'bbbbb', 25, '123 Main St', 0, NULL, NULL),
+(34, 'aaaa', 'bbbbb', 25, '123 Main St', 0, NULL, NULL),
+(35, 'aaaa', 'bbbbb', 25, '123 Main St', 0, NULL, NULL),
+(36, 'aaaa', 'bbbbb', 25, '123 Main St', 0, NULL, NULL),
+(37, 'aaaa', 'bbbbb', 25, '123 Main St', 0, NULL, NULL),
+(38, 'aaaa', 'bbbbb', 25, '123 Main St', 0, NULL, NULL);
 
 --
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `administrateur`
---
-ALTER TABLE `administrateur`
-  ADD PRIMARY KEY (`admin_id`);
 
 --
 -- Indexes for table `livre`
@@ -156,14 +135,6 @@ ALTER TABLE `administrateur`
 ALTER TABLE `livre`
   ADD PRIMARY KEY (`book_id`),
   ADD KEY `user_id` (`user_id`);
-
---
--- Indexes for table `profil`
---
-ALTER TABLE `profil`
-  ADD PRIMARY KEY (`email`,`password`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `admin_id` (`admin_id`);
 
 --
 -- Indexes for table `requests`
@@ -176,17 +147,12 @@ ALTER TABLE `requests`
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
-  ADD PRIMARY KEY (`user_id`);
+  ADD PRIMARY KEY (`user_id`),
+  ADD UNIQUE KEY `email` (`email`,`password`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
-
---
--- AUTO_INCREMENT for table `administrateur`
---
-ALTER TABLE `administrateur`
-  MODIFY `admin_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `livre`
@@ -198,7 +164,7 @@ ALTER TABLE `livre`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- Constraints for dumped tables
@@ -209,13 +175,6 @@ ALTER TABLE `user`
 --
 ALTER TABLE `livre`
   ADD CONSTRAINT `livre_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE;
-
---
--- Constraints for table `profil`
---
-ALTER TABLE `profil`
-  ADD CONSTRAINT `profil_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `profil_ibfk_2` FOREIGN KEY (`admin_id`) REFERENCES `administrateur` (`admin_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `requests`

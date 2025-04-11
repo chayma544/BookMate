@@ -94,38 +94,38 @@ try {
             ]);
             break;
 
-            case 'PUT': // 👶 If someone sends a request to update a user (PUT = change)
+            case 'PUT': //  If someone sends a request to update a user (PUT = change)
     
-                // 📦 Grab the data the user sent in the body of the request (it's in JSON format)
+                //  Grab the data the user sent in the body of the request (it's in JSON format)
                 $requestData = json_decode(file_get_contents("php://input"), true);
             
-                // 🚨 Make sure they told us WHO they want to update (must include user_id)
+                //  Make sure they told us WHO they want to update (must include user_id)
                 if (empty($requestData['user_id'])) {
                     http_response_code(400); // 400 = Bad Request
                     echo json_encode(['error' => 'User ID is required']);
                     break;
                 }
             
-                // 🔍 Look in the database to see if this user exists
+                //  Look in the database to see if this user exists
                 $checkUser = $pdo->prepare("SELECT * FROM user WHERE `user_id` = ?");
                 $checkUser->execute([$requestData['user_id']]);
                 $currentData = $checkUser->fetch(PDO::FETCH_ASSOC);
             
-                // 😢 If the user doesn’t exist, tell them
+                //  If the user doesn’t exist, tell them
                 if (!$currentData) {
                     http_response_code(404); // 404 = Not Found
                     echo json_encode(['error' => 'User not found']);
                     break;
                 }
             
-                // 🧩 Combine the old user info with the new changes they gave us
+                //  Combine the old user info with the new changes they gave us
                 $mergedData = array_merge($currentData, $requestData);
             
-                // 🛠️ We're going to build the update sentence dynamically
+                //  We're going to build the update sentence dynamically
                 $updateFields = []; // This will hold things like: "FirstName = ?"
                 $params = [];       // This will hold the values like: "Lina", "Tunis", etc.
             
-                // 🎯 Only allow these fields to be updated (for safety)
+                //  Only allow these fields to be updated (for safety)
                 $allowedFields = [
                     'FirstName', 
                     'LastName', 
@@ -133,7 +133,7 @@ try {
                     'address'
                 ];
             
-                // 🧹 Loop through allowed fields and see if any were provided in the request
+                //  Loop through allowed fields and see if any were provided in the request
                 foreach ($allowedFields as $field) {
                     if (isset($requestData[$field])) {
                         $updateFields[] = "`$field` = ?";     // Add the field to the update list
@@ -141,26 +141,26 @@ try {
                     }
                 }
             
-                // 😡 If the person didn’t send any valid fields to update, reject it
+                //  If the person didn’t send any valid fields to update, reject it
                 if (empty($updateFields)) {
                     http_response_code(400); // 400 = Bad Request
                     echo json_encode(['error' => 'No valid fields provided for update']);
                     break;
                 }
             
-                // 🎯 Add user_id at the end so we can tell the DB which user to update
+                //  Add user_id at the end so we can tell the DB which user to update
                 $params[] = $requestData['user_id'];
             
-                // 🧱 Build the final update query like: UPDATE user SET FirstName = ?, age = ? WHERE user_id = ?
+                //  Build the final update query like: UPDATE user SET FirstName = ?, age = ? WHERE user_id = ?
                 $query = "UPDATE user SET " . implode(', ', $updateFields) . " WHERE `user_id` = ?";
                 $stmt = $pdo->prepare($query); // Prepare the SQL query
                 $stmt->execute($params);       // Execute with all the values
             
-                // 🎉 If at least one row was changed, success!
+                //  If at least one row was changed, success!
                 if ($stmt->rowCount() > 0) {
                     echo json_encode(['message' => 'User updated successfully']);
                 } else {
-                    // 😐 Otherwise, maybe the data was the same as before
+                    //  Otherwise, maybe the data was the same as before
                     http_response_code(404);
                     echo json_encode(['error' => 'No changes made']);
                 }
