@@ -1,0 +1,60 @@
+.book-item {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1.5rem;
+  }
+  
+  .book-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  
+  .book-cover {
+    width: 100px;
+    margin-right: 1.5rem;
+  }
+  
+  .book-cover img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .book-details {
+    flex: 1;
+  }
+  
+  .book-details h4 {
+    font-size: 1.2rem;
+    margin-bottom: 0.3rem;
+  }
+  
+  .author {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+  }
+  
+  .progress-container {
+    margin-bottom: 1rem;
+  }
+  
+  .progress-bar {
+    height: 8px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+    position: relative;
+  }
+  
+  .progress-fill {
+    position: absolute;
+    height: 100%;
+    background-color: var(--primary-color);
+    border-radius: 4px;
+  }
+  
+  .book-actions {
+    display: flex;
+    gap: 1.5rem;
+  }

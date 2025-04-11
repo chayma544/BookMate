@@ -1,1 +1,11 @@
-<p>stats-card works!</p>
+<div class="stat-card">
+    <div class="stat-icon">
+      <i class="material-icons">{{ icon }}</i>
+    </div>
+    <div class="stat-info">
+      <p>{{ label }}</p>
+      <h3>{{ value }} 
+        <span class="change positive" *ngIf="change">+{{ change }}</span>
+      </h3>
+    </div>
+  </div>

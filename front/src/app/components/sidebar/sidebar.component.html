@@ -1,1 +1,17 @@
-<p>sidebar works!</p>
+<aside class="sidebar">
+    <nav>
+      <ul>
+        <li *ngFor="let item of navItems" 
+            class="nav-item" 
+            [class.active]="item.active">
+          <i class="material-icons">{{ item.icon }}</i>
+          <span>{{ item.label }}</span>
+          <span class="badge" *ngIf="item.badge && notifications > 0">{{ notifications }}</span>
+        </li>
+      </ul>
+    </nav>
+    <button class="add-book-btn">
+      <i class="material-icons">add</i>
+      <span>Add a Book</span>
+    </button>
+  </aside>

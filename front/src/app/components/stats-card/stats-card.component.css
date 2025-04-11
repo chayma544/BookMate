@@ -1,0 +1,35 @@
+.stat-card {
+    flex: 1;
+    background-color: var(--bg-white);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+  }
+  
+  .stat-icon {
+    background-color: rgba(176, 125, 72, 0.1);
+    color: var(--primary-color);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+  }
+  
+  .stat-info h3 {
+    font-size: 1.8rem;
+    font-weight: 500;
+  }
+  
+  .change {
+    font-size: 0.9rem;
+    font-weight: normal;
+  }
+  
+  .change.positive {
+    color: var(--success-color);
+  }

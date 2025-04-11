@@ -1,13 +1,33 @@
 
-<div class="landing-page">
-  <h1>Welcome to the Floating Book Universe!</h1>
-  <p>Turn your bookshelf into a gateway to endless stories.</p>
-  <button (click)="fetchBooks()">Load Books</button>
-  <div *ngIf="books">
-    <ul>
-      <li *ngFor="let book of books">{{ book.title }}</li>
-    </ul>
+<div class="book-mate-container">
+  <app-header [notifications]="notifications"></app-header>
+  <div class="content-container">
+    <app-sidebar [notifications]="notifications"></app-sidebar>
+    <main class="main-content">
+      <app-welcome-banner></app-welcome-banner>
+      <div class="stats-row">
+        <app-stats-card 
+          icon="import_contacts" 
+          label="Books Shared" 
+          [value]="3" 
+          [change]="2">
+        </app-stats-card>
+        
+        <app-stats-card 
+          icon="menu_book" 
+          label="Books Borrowed" 
+          [value]="8" 
+          [change]="1">
+        </app-stats-card>
+        
+        <app-stats-card 
+          icon="timer" 
+          label="Books Read" 
+          [value]="32">
+        </app-stats-card>
+      </div>
+      <app-reading-section></app-reading-section>
+    </main>
+    <app-quick-stats></app-quick-stats>
   </div>
 </div>
-
-

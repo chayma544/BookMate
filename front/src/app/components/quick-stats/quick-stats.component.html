@@ -1,1 +1,27 @@
-<p>quick-stats works!</p>
+<aside class="quick-stats">
+    <div class="stats-card">
+      <h3>Quick Stats</h3>
+      <div class="stat-item">
+        <div class="stat-label">
+          <p>Available books near you</p>
+          <span>{{ availableBooks }}</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="availableBooks*20"></div>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">
+          <p>Your lending score</p>
+          <span>{{ lendingScore }}/5.0</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="lendingScore*20"></div>
+        </div>
+      </div>
+      <div class="community-section">
+        <h4>Community Books</h4>
+        <button class="btn btn-primary">Browse Available Books</button>
+      </div>
+    </div>
+  </aside>

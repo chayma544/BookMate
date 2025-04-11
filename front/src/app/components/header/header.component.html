@@ -1,1 +1,20 @@
-<p>header works!</p>
+<header class="header">
+    <div class="logo">
+      <h1>BookMate</h1>
+    </div>
+    <div class="search-container">
+      <div class="search-box">
+        <i class="material-icons search-icon">search</i>
+        <input type="text" placeholder="Search books, authors...">
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="notification-btn">
+        <i class="material-icons">notifications</i>
+        <span class="notification-badge" *ngIf="notifications > 0">{{notifications}}</span>
+      </button>
+      <button class="user-btn">
+        <i class="material-icons">person</i>
+      </button>
+    </div>
+  </header>

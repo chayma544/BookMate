@@ -1,0 +1,66 @@
+.sidebar {
+    width: 250px;
+    background-color: var(--bg-white);
+    border-right: 1px solid var(--border-color);
+    padding: 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .sidebar nav {
+    flex: 1;
+  }
+  
+  .nav-item {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem 1.5rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .nav-item.active {
+    color: var(--primary-color);
+    background-color: rgba(176, 125, 72, 0.08);
+    font-weight: 500;
+  }
+  
+  .nav-item i {
+    margin-right: 0.8rem;
+  }
+  
+  .nav-item .badge {
+    background-color: #e74c3c;
+    color: white;
+    font-size: 0.75rem;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+  }
+  
+  .add-book-btn {
+    margin: 1rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .add-book-btn:hover {
+    background-color: var(--primary-dark);
+  }
+  
+  .add-book-btn i {
+    margin-right: 0.5rem;
+  }

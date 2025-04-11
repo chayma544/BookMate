@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-welcome-banner',
-  imports: [],
   templateUrl: './welcome-banner.component.html',
-  styleUrl: './welcome-banner.component.css'
+  styleUrls: ['./welcome-banner.component.scss']
 })
 export class WelcomeBannerComponent {
-
+  title = 'Welcome to BookMate';
+  description = 'Share your books and discover new reads from your community';
 }

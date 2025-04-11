@@ -1,0 +1,49 @@
+.quick-stats {
+    width: 280px;
+    padding: 1.5rem;
+    background-color: var(--bg-white);
+    border-left: 1px solid var(--border-color);
+  }
+  
+  .stats-card {
+    padding: 1.5rem;
+    background-color: var(--bg-light);
+    border-radius: 8px;
+  }
+  
+  .stats-card h3 {
+    margin-bottom: 1.5rem;
+  }
+  
+  .stat-item {
+    margin-bottom: 1.5rem;
+  }
+  
+  .stat-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+  
+  .progress-bar {
+    height: 8px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+    position: relative;
+  }
+  
+  .progress-fill {
+    position: absolute;
+    height: 100%;
+    background-color: var(--primary-color);
+    border-radius: 4px;
+  }
+  
+  .community-section {
+    margin-top: 2rem;
+  }
+  
+  .community-section h4 {
+    margin-bottom: 1rem;
+  }
