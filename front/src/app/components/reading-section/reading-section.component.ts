@@ -4,6 +4,7 @@ import { Book } from '../../models/book.model';
 @Component({
   selector: 'app-reading-section',
   templateUrl: './reading-section.component.html',
+  standalone: true,
   styleUrls: ['./reading-section.component.scss']
 })
 export class ReadingSectionComponent {

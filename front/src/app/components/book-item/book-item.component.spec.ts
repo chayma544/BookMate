@@ -1,5 +1,5 @@
+/// <reference types="jasmine" />
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { BookItemComponent } from './book-item.component';
 
 describe('BookItemComponent', () => {
@@ -9,8 +9,7 @@ describe('BookItemComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [BookItemComponent]
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(BookItemComponent);
     component = fixture.componentInstance;
