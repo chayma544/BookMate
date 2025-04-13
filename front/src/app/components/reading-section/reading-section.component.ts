@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
-import { Book } from '../../models/book.model';
+import { Book } from '../../models/Book.model';
+import { BookItemComponent } from '../book-item/book-item.component'; 
 
 @Component({
   selector: 'app-reading-section',
   templateUrl: './reading-section.component.html',
   standalone: true,
-  styleUrls: ['./reading-section.component.scss']
+  imports: [BookItemComponent],
+  styleUrls: ['./reading-section.component.css']
 })
 export class ReadingSectionComponent {
   books: Book[] = [

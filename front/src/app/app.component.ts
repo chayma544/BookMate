@@ -12,15 +12,15 @@ import { QuickStatsComponent } from './components/quick-stats/quick-stats.compon
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  styleUrls: ['./app.component.css'],
   imports: [
-    CommonModule,
-    HeaderComponent,
-    SidebarComponent,
-    WelcomeBannerComponent,
-    StatsCardComponent,
+    //CommonModule,
+    //HeaderComponent,
+    //SidebarComponent,
+    //WelcomeBannerComponent,
+    //StatsCardComponent,
     ReadingSectionComponent,
-    QuickStatsComponent
+    //QuickStatsComponent
   ]
 })
 export class AppComponent {
