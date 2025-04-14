@@ -13,17 +13,15 @@ import { QuickStatsComponent } from './components/quick-stats/quick-stats.compon
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  imports: [
-    CommonModule,
-    HeaderComponent,
-    SidebarComponent,
-    WelcomeBannerComponent,
-    StatsCardComponent,
-    ReadingSectionComponent,
-    QuickStatsComponent
-  ]
+  imports: [HeaderComponent, SidebarComponent, WelcomeBannerComponent, StatsCardComponent, ReadingSectionComponent],
+  
 })
 export class AppComponent {
-  title = 'BookMate';
-  notifications = 2;
+  notifications : number = 5; // or mock some notifications if needed
+
+  books = [
+    { title: 'The Secret Garden', author: 'Frances Hodgson Burnett' },
+    { title: 'A Tale of Two Cities', author: 'Charles Dickens' },
+    { title: 'Pride and Prejudice', author: 'Jane Austen' }
+  ];
 }

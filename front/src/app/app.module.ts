@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
@@ -13,18 +12,9 @@ import { ReadingSectionComponent } from './components/reading-section/reading-se
 import { BookItemComponent } from './components/book-item/book-item.component';
 import { QuickStatsComponent } from './components/quick-stats/quick-stats.component';
 
-
-
 @NgModule({
   declarations: [
-    AppComponent,
-    HeaderComponent,
-    SidebarComponent,
-    WelcomeBannerComponent,
-    StatsCardComponent,
-    ReadingSectionComponent,
-    BookItemComponent,
-    QuickStatsComponent
+    
   ],
   imports: [
     BrowserModule,
@@ -33,15 +23,14 @@ import { QuickStatsComponent } from './components/quick-stats/quick-stats.compon
         { path: '', component: WelcomeBannerComponent },
         { path: 'books', component: ReadingSectionComponent }
     ]),
-    ReadingSectionComponent,
-    HeaderComponent,
     SidebarComponent,
+    HeaderComponent,
+    WelcomeBannerComponent,
     StatsCardComponent,
+    ReadingSectionComponent,
     BookItemComponent,
-    QuickStatsComponent,
-    WelcomeBannerComponent
+    QuickStatsComponent
 ],
-  
   providers: [],
   bootstrap: [AppComponent]
 })
