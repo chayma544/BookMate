@@ -14,13 +14,13 @@ import { QuickStatsComponent } from './components/quick-stats/quick-stats.compon
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   imports: [
-    //CommonModule,
-    //HeaderComponent,
-    //SidebarComponent,
-    //WelcomeBannerComponent,
-    //StatsCardComponent,
+    CommonModule,
+    HeaderComponent,
+    SidebarComponent,
+    WelcomeBannerComponent,
+    StatsCardComponent,
     ReadingSectionComponent,
-    //QuickStatsComponent
+    QuickStatsComponent
   ]
 })
 export class AppComponent {

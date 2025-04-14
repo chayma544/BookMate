@@ -1,11 +1,13 @@
-
 <div class="book-mate-container">
   <app-header [notifications]="notifications"></app-header>
+
   <div class="content-container">
     <app-sidebar [notifications]="notifications"></app-sidebar>
+
     <main class="main-content">
       <app-welcome-banner></app-welcome-banner>
       <router-outlet></router-outlet>
+
       <div class="stats-row">
         <app-stats-card 
           icon="import_contacts" 
@@ -13,22 +15,32 @@
           [value]="3" 
           [change]="2">
         </app-stats-card>
-        
+
         <app-stats-card 
           icon="menu_book" 
           label="Books Borrowed" 
           [value]="8" 
           [change]="1">
         </app-stats-card>
-        
+
         <app-stats-card 
           icon="timer" 
           label="Books Read" 
           [value]="32">
         </app-stats-card>
       </div>
+
       <app-reading-section></app-reading-section>
+
+      <!-- 🌟 Book List Section -->
+      <section class="book-list-section mt-4">
+        <h2 class="section-title">📚 Available Books</h2>
+        <div class="book-list d-flex flex-wrap gap-3">
+          <app-book-item *ngFor="let book of books" [book]="book"></app-book-item>
+        </div>
+      </section>
     </main>
+
     <app-quick-stats></app-quick-stats>
   </div>
 </div>

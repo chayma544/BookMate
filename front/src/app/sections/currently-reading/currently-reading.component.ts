@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './currently-reading.component.html',
-  styleUrl: './currently-reading.component.css'
+  styleUrls: ['./currently-reading.component.css']
 })
 export class CurrentlyReadingComponent {
 

@@ -28,15 +28,19 @@ import { QuickStatsComponent } from './components/quick-stats/quick-stats.compon
   ],
   imports: [
     BrowserModule,
-
     FormsModule,
-
     RouterModule.forRoot([
-      
-      { path: '', component: WelcomeBannerComponent },
-      { path: 'books', component: ReadingSectionComponent }
-    ])
-  ],
+        { path: '', component: WelcomeBannerComponent },
+        { path: 'books', component: ReadingSectionComponent }
+    ]),
+    ReadingSectionComponent,
+    HeaderComponent,
+    SidebarComponent,
+    StatsCardComponent,
+    BookItemComponent,
+    QuickStatsComponent,
+    WelcomeBannerComponent
+],
   
   providers: [],
   bootstrap: [AppComponent]
