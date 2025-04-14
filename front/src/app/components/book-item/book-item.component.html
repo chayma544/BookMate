@@ -1,20 +1,37 @@
-<div class="book-item">
-    <div class="book-cover">
-      <img [src]="book.coverUrl" [alt]="book.title">
-    </div>
-    <div class="book-details">
-      <h4>{{ book.title }}</h4>
-      <p class="author">{{ book.author }}</p>
-      <div class="progress-container" *ngIf="book.progress && book.progress > 0">
-        <p>Progress</p>
-        <div class="progress-bar">
-          <div class="progress-fill" [style.width.%]="book.progress"></div>
-        </div>
-        <span class="progress-text">{{ book.progress }}%</span>
-      </div>
-      <div class="book-actions" *ngIf="book.progress && book.progress > 0">
-        <button class="btn btn-text">Continue Reading</button>
-        <button class="btn btn-text">Update Progress</button>
-      </div>
+<div class="book-card">
+  <div class="book-cover">
+    <img [src]="book.coverUrl" [alt]="book.title" class="cover-image">
+    
+    <div class="status-labels">
+      <span *ngIf="book.availability === 'borrowed'" class="status-label status-borrowed">Borrowed</span>
+      <span *ngIf="book.availability === 'available'" class="status-label status-available">Available</span>
+      <span *ngIf="book.readingStatus" class="status-label" [ngClass]="getStatusClass(book.readingStatus)">
+        {{ book.readingStatus }}
+      </span>
     </div>
   </div>
+  
+  <div class="book-details">
+    <h3 class="book-title">{{ book.title }}</h3>
+    <p class="book-author">{{ book.author_name }}</p>
+    
+    <div class="book-rating">
+      <span *ngFor="let star of getStars(book.rating!)" class="star">★</span>
+      <span class="rating-value">{{ book.rating }}</span>
+      <span *ngIf="book.pages" class="pages-count">• {{ book.pages }} pages</span>
+    </div>
+    
+    <div class="book-location" *ngIf="book.location">
+      <i class="location-icon">📍</i>
+      <span>{{ book.location }}</span>
+    </div>
+    
+    <div class="progress-container" *ngIf="book.progress !== undefined">
+      <div class="progress-text">Progress</div>
+      <div class="progress-bar-container">
+        <div class="progress-bar" [style.width.%]="book.progress"></div>
+      </div>
+      <div class="progress-value">{{ book.progress }}%</div>
+    </div>
+  </div>
+</div>
